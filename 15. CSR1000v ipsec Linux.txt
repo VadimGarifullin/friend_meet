@@ -1,0 +1,50 @@
+hostname __hostname__
+clock timezone MSK +3
+ntp server 200.100.100.254
+ip dhcp pool cli1
+    network 10.10.100.0 255.255.255.0
+    default-router 10.10.100.254
+    dns-server 200.100.100.254
+crypto isakmp policy 1
+    encryption aes 256
+    hash sha256
+    authentication pre-share
+    group 14
+crypto isakmp key VerySecretKeyCisco address 0.0.0.0 
+crypto ipsec transform-set TS esp-aes 256 esp-sha-hmac
+    mode tunnel
+crypto ipsec profile vpn
+    set transform-set TS
+int tun1
+    ip address 100.100.100.2 255.255.255.252
+    ip mtu 1480
+    ip ospf network point-to-point
+    tunnel source gi1
+    tunnel mode ipsec ipv4
+    tunnel destination 200.100.100.100
+    tunnel protection ipsec profile vpn
+int tun2
+    ip address 100.100.150.2 255.255.255.252
+    ip mtu 1480
+    ip ospf network point-to-point
+    tunnel source gi1
+    tunnel mode ipsec ipv4
+    tunnel destination 200.100.100.200
+    tunnel protection ipsec profile vpn
+int gi1
+    ip address 200.100.100.50 255.255.255.0
+    ip nat outside
+int gi2
+    ip address 10.10.100.254 255.255.255.0
+    ip nat inside
+router ospf 1
+    passive-interface default
+    no passive-interface tun1
+    no passive-interface tun2
+    network 10.10.100.0 0.0.0.255 area 0
+    network 100.100.100.0 0.0.0.3 area 0
+    network 100.100.150.0 0.0.0.3 area 0
+ip access-list standard NAT
+    permit 10.10.100.0 0.0.0.255
+ip nat inside source list NAT interface gi1 overload
+ip route 0.0.0.0 0.0.0.0 200.100.100.254

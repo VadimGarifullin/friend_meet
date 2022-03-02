@@ -1,0 +1,22 @@
+//cd-rom docker_inst.iso
+apt-cdrom add
+mkdir /opt/docker_files
+mount /dev/sr0 /opt/docker_files
+
+mkdir /files
+cp /opt/docker_files/* /files
+
+mv /files/appdocker0.zip /opt/
+mv /files/Readme.txt /opt/
+
+shutdown -h now
+//cd-rom bd1.iso
+
+apt-cdrom add
+apt install /files/*
+
+docker image load -i /opt/appdocker0.zip         //либо docker -i /opt/appdocker0.zip
+
+docker run -d -p 5000:5000 --restart always appdocker0:latest
+
+проверка: curl http://localhost:5000

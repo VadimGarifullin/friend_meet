@@ -1,0 +1,20 @@
+выключить firewalld
+
+systemctl disable --now firewalld
+
+выключить selinux 
+
+nano /etc/selinux/config
+
+	SELINUX=disabled
+
+setenforce 0
+
+
+разрешить пересылку пакетов между сетевыми интерфейсами
+
+nano /etc/sysctl.conf
+
+	net.ipv4.ip_forward=1
+
+sysctl -p

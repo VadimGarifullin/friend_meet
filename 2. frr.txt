@@ -1,0 +1,12 @@
+
+dnf install epel-release -y
+
+dnf install frr -y
+
+systemctl enable --now frr
+
+nano /etc/frr/daemons
+	ospfd=yes
+systemctl restart frr
+
+vtysh

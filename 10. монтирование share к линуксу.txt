@@ -1,0 +1,9 @@
+
+
+mkdir /opt/share
+
+sudo nano /etc/fstab
+
+//172.16.20.20/share /opt/share cifs username=DBAdmin,password=P@ssw0rd,noperm,file_mode=0777,dir_mode=0777 0 0
+
+sudo mount /opt/share

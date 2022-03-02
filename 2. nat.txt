@@ -1,0 +1,13 @@
+nano /etc/nftables/nat.nft
+
+
+#iifname бла бла
+oifname "ens192" ip saddr 172.16.10.0/24 counter masquerade
+
+
+nano /etc/sysconfig/nftables.conf
+
+include   меняем на nat.nft
+
+systemctl restart nftables
+systemctl enable nftables

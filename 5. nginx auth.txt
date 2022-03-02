@@ -1,0 +1,8 @@
+L-FW:
+
+dnf install httpd-tools -y
+(или apt install apache2-utils)
+htpasswd -c /etc/nginx/.htpasswd extaccess
+extP@ssw0rd
+
+

@@ -1,0 +1,18 @@
+
+L-FW, R-FW
+
+nano /opt/gre.up
+
+#!/bin/bash
+ip tunnel add gre1 mode gre remote 200.100.100.200 local 200.100.100.100
+ip link set gre1 up
+ip addr add 100.100.100.1/30 dev gre1
+ip route add 172.16.20.0/24 via 100.100.100.2
+
+nano /etc/rc.local
+
+добавить строку:    /opt/gre.up
+
+chmod +x /opt/gre.up /etc/rc.local
+
+reboot

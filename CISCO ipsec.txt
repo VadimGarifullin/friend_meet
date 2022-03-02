@@ -1,0 +1,19 @@
+L-RTR/R-RTR:
+
+en
+ conf t
+  crypto isakmp policy 1
+     encr aes
+     hash sha256
+     authentication pre-share
+     group 14
+   exit
+  crypto isakmp key cisco address 0.0.0.0
+  crypto ipsec transform-set TS esp-aes esp-md5-hmac
+     mode transport
+   exit
+  crypto ipsec profile vpn
+     set transform-set TS
+   exit
+  int tun1
+   tunnel protection ipsec profile vpn

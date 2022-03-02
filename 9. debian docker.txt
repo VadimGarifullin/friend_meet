@@ -1,0 +1,17 @@
+Установка Docker без скрипта
+    2  sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+    3  sudo apt-get update
+    4  sudo apt-get install apt-transport-https ca-certificates curl gnupg2 software-properties-common -y
+    5  sudo curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+    6  sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian buster stable"
+    7  sudo apt-get update
+    8  sudo apt-get install docker-ce docker-ce-cli containerd.io
+    9  sudo systemctl status docker
+
+
+
+
+wget https://storage.googleapis.com/wscc-cloud-public/responding-app.tar
+sudo docker load < responding-app.tar
+sudo docker run -d --hostname docker-web1 --publish 5000:5000 --restart always responding-app --ad_ip_addr 172.16.10.1 --db_conn_string postgresql://admin:secret@172.16.10.50:5432/dev --external_link http://yandex.ru
+

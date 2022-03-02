@@ -1,0 +1,30 @@
+DB
+
+apt install wget -y
+wget "https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)"
+mv ./docker-compose-Linux-x86_64 /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+
+mkdir docker_compose
+cd docker_compose
+nano docker-compose.yml
+
+version: "3"
+services:
+  db:
+   image: postgres:10
+   container_name: db
+   hostname: db
+   restart: always
+   ports:
+     - 0.0.0.0:5432:5432
+   volumes:
+     - ./data/db:/var/lib/postgresql/data
+   environment:
+     - POSTGRES_HOST=db
+     - POSTGRES_DB=dev
+     - POSTGRES_USER=admin
+     - POSTGRES_PASSWORD=secret
+
+docker-compose up -d --build

@@ -1,0 +1,76 @@
+template > extensions > client authentication
+
+root cer (BASE 64), remote.unakbars.ru www template, <client>(название машинки).unakbars.ru
+
+разделываем их на cer и key на логе, кидаем нужные на нужные машинки.
+
+dnf install -y epel-release
+dnf install -y openvpn
+
+СЕРВЕР (LOG):
+
+cp /usr/share/doc/openvpn/sample/sample-config-files/server.conf /etc/openvpn/server/
+
+openssl dhparam -out dh.pem 2048
+
+nano /etc/openvpn/server/server.conf
+
+proto tcp
+dev tun
+topology subnet
+push "redirect-gateway"
+#tls
+#keepalive
+user nobody
+group nogroup
+persist-key
+persist-tun
+#comp-lzo
+#explicit-exit-notify
+
+nftables
+
+POSTROUTING
+	oifname "ens192" ip saddr 192.168.100.0/24 counter masquerade
+
+systemctl enable --now openvpn-server@server
+
+НА КЛИЕНТАХ: 
+
+cp /usr/share/doc/openvpn/examples/sample-config-files/client.conf /etc/openvpn/client/
+
+dev tun
+proto tcp
+remote remote.unakbars.ru 1194
+resolv-retry infinite
+user nobody
+group nogroup
+persist-key
+persist-tun
+#comp-lzo
+
+НА РОУТЕРЕ ДО СЕРВЕРА:
+
+nftables 
+
+chain PREROUTING {
+	type nat hook prerouting priority 0
+	policy accept
+	iifname "ens192" tcp dport 1194 counter dnat to <ip сервера>:1194
+	}
+}
+
+reboot все
+
+INET-W:
+
+client.ovpn
+
+<ca>
+</ca>
+<cert>
+</cert>
+<key>
+</key>
+
+

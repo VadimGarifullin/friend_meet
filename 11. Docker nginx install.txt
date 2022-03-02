@@ -1,0 +1,43 @@
+L-FW
+
+systemctl stop nginx
+
+dnf remove runc* (если CentOS не minimal inst)
+
+dnf update
+
+dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+
+dnf install -y docker-ce
+
+systemctl enable --now docker
+
+mkdir docker_nginx
+cd docker_nginx
+wget "https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)"
+mv ./docker-compose-Linux-x86_64 /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+cp /etc/nginx/conf.d/task.conf .
+cp /opt/123.cer .
+cp /opt/123.key .
+
+nano Dockerfile
+
+	FROM nginx
+
+	COPY ./task.conf /etc/nginx/conf.d/task.conf
+	COPY ./123.cer /opt/
+	COPY ./123.key /opt/
+
+nano docker-compose.yml
+
+	sitename:
+	  build: .
+	  ports:
+          - 80:80
+	  - 443:443
+	  restart: always
+
+docker-compose up -d --build
+

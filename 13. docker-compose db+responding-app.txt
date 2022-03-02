@@ -1,0 +1,25 @@
+version: '3.8'
+    services:
+      postgre:
+        image: postgres:10
+        hostname: db
+        restart: always
+        volumes:
+          - ./data/db:/var/lib/postgresql/data
+        environment:
+          - POSTGRES_HOST=db
+          - POSTGRES_DB=dev
+          - POSTGRES_USER=admin
+          - POSTGRES_PASSWORD=secret
+      app:
+        image: responding-app:latest
+        restart: always
+        logging:
+          driver: syslog
+          options:
+            syslog-address: "tcp://10.10.10.34:514"
+        ports:
+          - 5000:5000
+        depends_on:
+          - postgre
+        command: --ad_ip_addr 172.16.10.1 --db_conn_string postgresql://admin:secret@db:5432/dev --external_link http://yandex.ru
